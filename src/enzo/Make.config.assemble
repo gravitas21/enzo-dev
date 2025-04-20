@@ -822,11 +822,43 @@
     # error if 
 
     ifeq ($(ERROR_ECUDA),1)
-        .PHONY: error_ecuda
-        error_ecuda:
+       .PHONY: error_ecuda
+       error_ecuda:
 	$(error Illegal value '$(CONFIG_ECUDA)' for $$(CONFIG_ECUDA))
     endif
 
+#-----------------------------------------------------------------------
+# DETERMINE Direct Nbody Calculation Settings
+# but only uses it if you set UseNBODY = 1 in your parameter files.
+#-----------------------------------------------------------------------
+
+    ERROR_NBODY = 1
+
+    # Settings to compile CUDA kernels 
+
+    ifeq ($(CONFIG_NBODY),yes)
+        ERROR_NBODY = 0
+	    ASSEMBLE_NBODY_DEFINES = -DNBODY -D GPU #-D SIMD #-D OMP
+	    ASSEMBLE_NBODY_LIBS = $(MACH_LIBS_NBODY)
+	    ASSEMBLE_NBODY_INCLUDES = $(MACH_LIBS_INCLUDES)
+	    OBJS_NBODY_LIB = $(OBJS_NBODY_ALL)
+    endif
+
+    # Settings to tell the make system not to compile CUDA routines
+
+    ifeq ($(CONFIG_NBODY),no)
+        ERROR_NBODY = 0
+        ASSEMBLE_NBODY_DEFINES = 
+	OBJS_NBODY_LIB = 
+    endif
+
+    # error if 
+
+    ifeq ($(ERROR_NBODY),1)
+       .PHONY: error_ecuda
+       error_ecuda:
+	$(error Illegal value '$(CONFIG_NBODY)' for $$(CONFIG_NBODY))
+    endif
 
 
 #-----------------------------------------------------------------------
@@ -1066,7 +1098,6 @@
         $(error Illegal value '$(CONFIG_FFTW)' for $$(CONFIG_FFTW))
     endif
 
-
 #=======================================================================
 # ASSIGN ALL OUTPUT VARIABLES
 #=======================================================================
@@ -1118,6 +1149,7 @@
               $(ASSEMBLE_FAST_SIB_DEFINES) \
               $(ASSEMBLE_BITWISE_IDENTICALITY_DEFINES) \
               $(ASSEMBLE_ECUDA_DEFINES) \
+              $(ASSEMBLE_NBODY_DEFINES) \
               $(ASSEMBLE_CUDADEBUG_DEFINES) \
               $(ASSEMBLE_HDF4_DEFINES) \
               $(ASSEMBLE_GRAVITY_4S_DEFINES) \
@@ -1149,8 +1181,10 @@
                $(OBJS_MY_PROBLEM) \
 	       $(OBJS_HYDRO_RK) \
 	       $(OBJS_ECUDA_LIB) \
+               $(OBJS_NBODY_LIB) \
 	       $(OBJS_PYTHON) \
-               $(OBJS_UUID)
+               $(OBJS_UUID) \
+               $(OBJS_NBODY)
 
     LIBS = $(MACH_LIBS) \
            $(ASSEMBLE_MPI_LIBS) \
@@ -1164,6 +1198,7 @@
            $(ASSEMBLE_NAUNET_LIBS) \
            $(ASSEMBLE_SUNDIALS_LIBS) \
            $(ASSEMBLE_SUITESPARSE_LIBS) \
-           $(ASSEMBLE_FFTW_LIBS)
+           $(ASSEMBLE_FFTW_LIBS) \
+           $(ASSEMBLE_NBODY_LIBS)
 
 

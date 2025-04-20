@@ -27,17 +27,28 @@
 void grid::DeleteAllButParticles()
 {
  
-  int i;
+  int i, j;
  
   //  this->DeleteParticles();
  
   for (i = 0; i < MAX_DIMENSION; i++) {
+#ifdef NBODY
+    delete [] AccelerationFieldNoStar[i];
+		if (ParticleAccelerationNoStar[i] != NULL) {
+			delete [] ParticleAccelerationNoStar[i];
+			ParticleAccelerationNoStar[i] = NULL;
+		}
+    AccelerationFieldNoStar[i]         = NULL;
+#endif
     delete [] ParticleAcceleration[i];
     delete [] AccelerationField[i];
- 
-    ParticleAcceleration[i]      = NULL;
     AccelerationField[i]         = NULL;
+    ParticleAcceleration[i]      = NULL;
   }
+#ifdef NBODY
+	delete [] ParticleAccelerationNoStar[MAX_DIMENSION];
+	ParticleAccelerationNoStar[MAX_DIMENSION] = NULL;
+#endif
   delete [] ParticleAcceleration[MAX_DIMENSION];
   ParticleAcceleration[MAX_DIMENSION] = NULL;
  
@@ -55,7 +66,18 @@ void grid::DeleteAllButParticles()
       OldAccelerationField[i] = NULL;
     }
 #endif
+
+
+#ifdef NBODY
+  delete [] PotentialFieldNoStar;
+  delete [] GravitatingMassFieldNoStar;
+  delete [] GravitatingMassFieldParticlesNoStar;
  
+  PotentialFieldNoStar                = NULL;
+  GravitatingMassFieldNoStar          = NULL;
+  GravitatingMassFieldParticlesNoStar = NULL;
+#endif
+
   delete [] PotentialField;
   delete [] GravitatingMassField;
   delete [] GravitatingMassFieldParticles;

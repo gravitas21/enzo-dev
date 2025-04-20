@@ -116,9 +116,6 @@ int SetLevelTimeStep(HierarchyEntry *Grids[], int NumberOfGrids, int level,
       *dtThisLevel = min(*dtThisLevel, min(dt_conduction,dt_ad));
     }
 
-    
-
-
     dtActual = *dtThisLevel;
 
 #ifdef USE_DT_LIMIT

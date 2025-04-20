@@ -427,7 +427,7 @@ OBJS_CONFIG_LIB = \
 	Grid_ComputeMetalLineLuminosity.o \
         Grid_ComputeOneZoneCollapseFactor.o \
 	Grid_ComputePressure.o \
-	Grid_ComputeRandomForcingFields.o\
+	Grid_ComputeRandomForcingFields.o \
         Grid_ComputeSputteringRate.o \
 	Grid_ComputeTemperatureField.o \
 	Grid_ComputeTimeStep.o \
@@ -1252,7 +1252,7 @@ OBJS_ECUDA_ALL = \
 	hydro_rk/Grid_CudaMHDRK2_2ndStep.o \
 	cuPPM.o \
 	CUDAUtil.o \
-	SaveSubgridFluxCUDA.o 
+	SaveSubgridFluxCUDA.o \ 
 
 # Objects to support get_uuid
 POBJS_UUID = \
@@ -1265,7 +1265,7 @@ POBJS_UUID = \
         uuid/parse.o \
         uuid/unpack.o \
         uuid/unparse.o \
-        uuid/uuid_time.o
+        uuid/uuid_time.o \
 
 OBJS_MY_PROBLEM = \
     myProblem/CollidingCloudInitialize.o \
@@ -1274,3 +1274,43 @@ OBJS_MY_PROBLEM = \
     myProblem/Grid_PrestellarCoreInitialize.o \
     myProblem/Grid_SetBulkVelocities.o \
     myProblem/TurbulenceGenerator.o
+
+# Objects for the Nbody6 support 
+
+OBJS_NBODY_ALL= \
+#				NbodyRoutines.o \
+#				PrepareNbodyComputation.o 
+
+OBJS_NBODY= \
+						NbodyRoutines.o \
+						PrepareNbodyComputation.o\
+						FinalizeNbodyComputation.o\
+						nbody/nbody.o\
+						nbody/Evolve.o\
+						nbody/cuda/CalculateRegularAcceleration.o\
+						nbody/cuda/CalculateAccelerationForAll.o\
+						nbody/cuda/cuda_my_acceleration.o\
+						nbody/InitializeTimeStep.o\
+						nbody/ComputationChainRoutine.o\
+						nbody/RegularAccelerationRoutine.o\
+						nbody/ReadWrite.o\
+						nbody/IrregularAccelerationRoutine.o\
+						nbody/CommunicationToHydro.o \
+						nbody/InitializeParticles.o\
+						nbody/TimeStepRoutines.o\
+						nbody/Particle/ParticleRoutines.o\
+						nbody/Particle/CalculateIrrForce.o\
+						nbody/Particle/UpdateParticle.o\
+						nbody/Particle/CalculateTimeStep.o\
+						nbody/Particle/InitializeTimeStep.o\
+						nbody/Particle/EvolveStar.o\
+						nbody/Binary/BinaryAccelerationRoutine.o\
+						nbody/Binary/BinaryRoutines.o\
+						nbody/Binary/KSRegularlizationTermination.o\
+						nbody/Binary/KSRegularlizationInitialization.o\
+						nbody/Binary/KSRegularlizationIntegration.o\
+ 						nbody/cuda/cuda_kernels.o
+ 						#nbody/cuda/cuda_routines.o\
+
+
+

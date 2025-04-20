@@ -81,7 +81,7 @@ int grid::GrackleWrapper()
 
   DeNum = HINum = HIINum = HeINum = HeIINum = HeIIINum = HMNum = H2INum = 
     H2IINum = DINum = DIINum = HDINum = 0;
- 
+
 #ifdef USE_NAUNET
   if (grackle_primordial)
 #else

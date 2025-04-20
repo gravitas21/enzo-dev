@@ -134,9 +134,11 @@ int CoolingTestInitialize(FILE *fptr, FILE *Outfptr,
 			  HierarchyEntry &TopGrid, TopGridData &MetaData); 
 int OneZoneFreefallTestInitialize(FILE *fptr, FILE *Outfptr, 
 				  HierarchyEntry &TopGrid, TopGridData &MetaData);
+
 int PrestellarCoreInitialize(FILE *fptr, FILE *Outfptr, 
                              HierarchyEntry &TopGrid, TopGridData &MetaData,
                              bool SetBaryonField);
+
 int CosmologySimulationInitialize(FILE *fptr, FILE *Outfptr,
                                   HierarchyEntry &TopGrid,
                                   TopGridData &MetaData);
@@ -202,6 +204,7 @@ int RHIonizationSteepInitialize(FILE *fptr, FILE *Outfptr,
 int CosmoIonizationInitialize(FILE *fptr, FILE *Outfptr,
 			      HierarchyEntry &TopGrid,
 			      TopGridData &MetaData, int local);
+
 int TestRadiatingStarParticleInitialize(FILE *fptr, FILE *Outfptr, HierarchyEntry &TopGrid,
 			       TopGridData &MetaData, float *Initialdt);
 #endif /* TRANSFER */
@@ -302,7 +305,7 @@ int InitializeNew(char *filename, HierarchyEntry &TopGrid,
     }
  
   // set the default MetaData values
- 
+
   SetDefaultGlobalValues(MetaData);
  
   // Read the MetaData/global values from the Parameter file
@@ -310,6 +313,7 @@ int InitializeNew(char *filename, HierarchyEntry &TopGrid,
   if (ReadParameterFile(fptr, MetaData, Initialdt) == FAIL) {
     ENZO_FAIL("Error in ReadParameterFile.");
   }
+
 
   //Ensure old style MHD_CT parameter files still work.
   if( MHDCT_ParameterJuggle() == FAIL ){
@@ -327,7 +331,12 @@ int InitializeNew(char *filename, HierarchyEntry &TopGrid,
     } else {
       NumberOfParticleAttributes = 0;
     }
-  }
+#ifdef NBODY
+    fprintf(stderr,"NumOfAtt=%d\n",NumberOfParticleAttributes);
+    NumberOfParticleAttributes = NumberOfParticleAttributes + 4; // for Acceleration
+    fprintf(stderr,"NumOfAtt=%d\n",NumberOfParticleAttributes);
+#endif
+    }
 
   // Give unset parameters their default values
  
@@ -929,7 +938,9 @@ int InitializeNew(char *filename, HierarchyEntry &TopGrid,
       ProblemType != 60 &&
       ProblemType != 106 && //AK
       ProblemType != 108 && //Yuan (Cluster)
-      ProblemType != 150)
+      ProblemType != 150 &&
+      ProblemType != 108 &&  //Yuan (Cluster)
+      ProblemType != -978) // AGORA
     ConvertTotalEnergyToGasEnergy(&TopGrid);
   
   // If using StarParticles, set the number to zero 

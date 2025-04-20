@@ -14,7 +14,6 @@
 ************************************************************************/
  
 #ifdef USE_MPI
- 
 #include "mpi.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,7 +40,7 @@ static MPI_Request  RequestHandle[MAX_NUMBER_OF_MPI_BUFFERS];
 static char        *RequestBuffer[MAX_NUMBER_OF_MPI_BUFFERS];
 static int          LastActiveIndex = -1;
  
- 
+
 /* function prototypes */
 
 int CommunicationBufferPurge(void) { 
@@ -127,7 +126,7 @@ int CommunicationBufferedSendCancel(int Tag)
 
   LastActiveIndex = NewLastActiveIndex;
 
-  return SUCCESS;
+  return SUCCESS;	
 
 }
 
@@ -206,5 +205,5 @@ int CommunicationBufferedSend(void *buffer, int size, MPI_Datatype Type, int Tar
  
   return SUCCESS;
 }
- 
+
 #endif /* USE_MPI */

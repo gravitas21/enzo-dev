@@ -271,6 +271,7 @@ int grid::MHDSourceTerms(float **dU, float min_coeff)
 	  igrid = i+(j+k*GridDimension[1])*GridDimension[0];
 	  rho = BaryonField[DensNum][igrid];
 	  
+
 	  gx = AccelerationField[0][igrid];
 	  gy = (GridRank > 1) ? (AccelerationField[1][igrid]) : 0;
 	  gz = (GridRank > 2) ? (AccelerationField[2][igrid]) : 0;

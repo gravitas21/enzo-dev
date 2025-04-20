@@ -1,6 +1,6 @@
 /***********************************************************************
 /
-/  GRID CLASS (RETURNS AN ARRAY OF POINTERS THAT ARE COMPATIBLE WITH
+/  GRID CLASS (RETURNS AN ARRAY OF POINTERS THAT ARE COMPATIBLE WITH 
 /              THE HYDRO_RK SOLVERS)
 /
 /  written by: John Wise
@@ -312,3 +312,4 @@ int grid::ReturnOldHydroRKPointers(float **Prim, bool ReturnMassFractions)
   return SUCCESS;
 
 }
+

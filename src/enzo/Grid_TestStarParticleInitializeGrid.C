@@ -44,6 +44,7 @@ int grid::TestStarParticleInitializeGrid(float TestStarParticleStarMass,
 
   if (ProcessorNumber != MyProcessorNumber)
     return SUCCESS;
+
   
   /* Get Units. */
 
@@ -83,8 +84,7 @@ int grid::TestStarParticleInitializeGrid(float TestStarParticleStarMass,
     ParticleVelocity[dim][0] = TestStarParticleStarVelocity[dim]*1e5*TimeUnits/LengthUnits;
   }
   ParticleMass[0] = CentralMass;
-  ParticleAttribute[0][0] = Time+1e-7;
-
+  ParticleAttribute[0][0] = Time+1e-7; //creation time:make sure it is non-zero
   if (STARFEED_METHOD(UNIGRID_STAR)) ParticleAttribute[1][0] = 10.0 * Myr_s/TimeUnits;
   if (STARFEED_METHOD(MOM_STAR))
     if(StarMakerExplosionDelayTime >= 0.0)

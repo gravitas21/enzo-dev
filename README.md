@@ -1,11 +1,12 @@
-# ENZO
+# ENZO AND ENZO-NBODY
 
 ENZO IS AN OPEN SOURCE CODE.  We encourage you to take it, inspect it, use it,
 and contribute back any changes you have made.  We strive to make the the Enzo
 community a community of *developers*.
 
-## RESOURCES
+ENZO-NBODY is one of the branches of the ENZO code. ENZO-NBODY is a hybrid cosmological hydrodynamic nbody simulation that implements a direct sum n-body solver for gravity. We aim at parallelizing our code with both CPUs and GPUs. 
 
+## RESOURCES 
 Enzo's main webpage is:
 
  * http://enzo-project.org
@@ -117,3 +118,11 @@ list of the people who have recently contributed, in alphabetical order:
    * Hao Xu                 haoxu.physics@gmail.com
    * Alvaro Zamora          alvarozamora@stanford.edu  
    * Fen Zhao               fenzhao@stanford.edu
+
+List of people who have contributed to the development of ENZO-NBODY:
+   
+   * Yongseok Jo               yjo@flatironinstitute.org, kerex@snu.ac.kr
+   * Seoyoung Kim              mintlux@snu.ac.kr
+
+Thanks to:
+   Ji-hoon Kim (mornkr@snu.ac.kr)

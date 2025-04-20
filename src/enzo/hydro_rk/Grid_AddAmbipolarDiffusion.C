@@ -66,7 +66,6 @@ int grid::AddAmbipolarDiffusion()
     size *= GridDimension[dim];
   }
 
-
   double *D[3];
   for (int dim = 0; dim < 3; dim++) {
     D[dim] = new double[size];

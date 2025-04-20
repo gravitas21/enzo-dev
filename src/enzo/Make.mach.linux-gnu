@@ -42,6 +42,7 @@ LOCAL_NAUNET_INSTALL      = /PATH/TO/NAUNET/INSTALL      # optional
 LOCAL_SUNDIALS_INSTALL    = /PATH/TO/SUNDIALS/INSTALL    # optional
 LOCAL_SUITESPARSE_INSTALL = /PATH/TO/SUITESPARSE/INSTALL # optional
 LOCAL_HYPRE_INSTALL       = /PATH/TO/HYPRE/INSTALL       # optional
+#LOCAL_MPI_INSTALL     = /home/sykim/local/openmpi-4.1.3
 
 #-----------------------------------------------------------------------
 # Compiler settings

@@ -54,10 +54,17 @@ grid::~grid()
     delete [] ParticlePosition[i];
     delete [] ParticleVelocity[i];
     delete [] ParticleAcceleration[i];
+#ifdef NBODY
+    delete [] AccelerationFieldNoStar[i];
+		if (ParticleAccelerationNoStar[i] != NULL) {
+			delete [] ParticleAccelerationNoStar[i];
+		}
+#endif
     delete [] AccelerationField[i];
     delete [] RandomForcingField[i];
     if (PhaseFctMultEven[i] != NULL) delete[] PhaseFctMultEven[i];
     if (PhaseFctMultOdd[i] != NULL) delete[] PhaseFctMultOdd[i];
+
   }
  
   if (PhaseFctInitEven != NULL) delete[] PhaseFctInitEven;
@@ -102,7 +109,10 @@ grid::~grid()
   }
 
   delete ParticleAcceleration[MAX_DIMENSION];
- 
+#ifdef NBODY
+	delete ParticleAccelerationNoStar[MAX_DIMENSION];
+#endif
+
   for (i = 0; i < MAX_NUMBER_OF_BARYON_FIELDS; i++) {
     delete [] BaryonField[i];
     delete [] OldBaryonField[i];
@@ -124,9 +134,15 @@ grid::~grid()
   delete [] ParticleMass;
   delete [] ParticleNumber;
   delete [] ParticleType;
+#ifdef NBODY
+  delete [] PotentialFieldNoStar;
+  delete [] GravitatingMassFieldNoStar;
+  delete [] GravitatingMassFieldParticlesNoStar;
+#endif
   delete [] PotentialField;
   delete [] GravitatingMassField;
   delete [] GravitatingMassFieldParticles;
+
   delete [] FlaggingField;
   delete [] MassFlaggingField;
   delete [] ParticleMassFlaggingField;

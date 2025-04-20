@@ -2360,6 +2360,8 @@ The parameters below are considered in ``StarParticleCreation`` method 11.
     See :ref:`molecular_hydrogen_regulated_star_formation`.
 ``H2StarMakerColdGasTemperature`` (external)
     See :ref:`molecular_hydrogen_regulated_star_formation`.
+``StarFormationOncePerRootGridTimeStep`` (external)
+    See :ref:`molecular_hydrogen_regulated_star_formation`.
 
 .. _popIII_star_formation_parameters:
 
@@ -5098,6 +5100,10 @@ Isolated Galaxy Evolution (31)
 ``GalaxySimulationInflowDensity`` (external)
     Controls inflow of gas into the box. It is strongly suggested that
     you leave this off. Default: 0.0
+``GalaxySimulationAngularMomentum`` (external)
+    Unit vector that defines the angular momentum vector of the galaxy
+    (in other words, this and the center position define the plane of
+    the galaxy). This _MUST_ be set! Default: (0.0, 0.0, 0.0)
 ``GalaxySimulationRPSWind`` (external)
     This flag turns on the ram pressure stripped (RPS) wind in the
     GalaxySimulation problem and sets the mode.  0 = off, 1 = on with

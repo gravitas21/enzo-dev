@@ -43,9 +43,12 @@ int grid::SolveForPotential(int level, FLOAT PotentialTime)
  
   if (MyProcessorNumber != ProcessorNumber)
     return SUCCESS;
-
+#ifdef NBODY
+  if (GravitatingMassFieldNoStar == NULL)  // if this is not set we have nothing to do.
+		return SUCCESS;
+#endif
   if (GravitatingMassField == NULL)  // if this is not set we have nothing to do.
-    return SUCCESS;
+		return SUCCESS;
 
   LCAPERF_START("grid_SolveForPotential");
  
@@ -75,7 +78,12 @@ int grid::SolveForPotential(int level, FLOAT PotentialTime)
   }
   tol_dim = max(sqrt(float(size))*1e-6, tol_dim);
  
+#ifdef NBODY
+	float *rhs1 = new float[size];
+	float *rhs2 = new float[size];
+#else
   float *rhs = new float[size];
+#endif
  
   float Constant = GravitationalConstant * InverseVolumeElement *
                    POW(GravitatingMassFieldCellSize, 2) / a;
@@ -83,10 +91,22 @@ int grid::SolveForPotential(int level, FLOAT PotentialTime)
 #define NO_SMOOTH_SOURCE
 #ifdef SMOOTH_SOURCE
  
-  FORTRAN_NAME(smooth2)(GravitatingMassField, rhs, &GridRank,
+#ifdef NBODY
+	FORTRAN_NAME(smooth2)(GravitatingMassField, rhs1, &GridRank,
 			GravitatingMassFieldDimension,
 			GravitatingMassFieldDimension+1,
 			GravitatingMassFieldDimension+2);
+	FORTRAN_NAME(smooth2)(GravitatingMassFieldNoStar, rhs2, &GridRank,
+			GravitatingMassFieldDimension,
+			GravitatingMassFieldDimension+1,
+			GravitatingMassFieldDimension+2);
+#else
+	FORTRAN_NAME(smooth2)(GravitatingMassField, rhs, &GridRank,
+			GravitatingMassFieldDimension,
+			GravitatingMassFieldDimension+1,
+			GravitatingMassFieldDimension+2);
+#endif
+
 #if 0
   FORTRAN_NAME(smooth2)(rhs, GravitatingMassField, &GridRank,
 			GravitatingMassFieldDimension,
@@ -97,13 +117,33 @@ int grid::SolveForPotential(int level, FLOAT PotentialTime)
 			GravitatingMassFieldDimension+1,
 			GravitatingMassFieldDimension+2);
 #endif
+
+#ifdef NBODY
+  for (i = 0; i < size; i++) {
+    rhs1[i] *= Constant;
+    rhs2[i] *= Constant;
+	}
+#else
   for (i = 0; i < size; i++)
     rhs[i] *= Constant;
+#endif
  
 #else /* SMOOTH_SOURCE */
  
-  for (i = 0; i < size; i++)
+
+
+  for (i = 0; i < size; i++) {
+#ifdef NBODY
+    rhs1[i] = GravitatingMassField[i] * Constant;
+    rhs2[i] = GravitatingMassFieldNoStar[i] * Constant;
+#else
     rhs[i] = GravitatingMassField[i] * Constant;
+#endif
+	}
+	/*
+	fprintf(stderr, "ndiff = %d\n", ndiff);
+	fprintf(stderr, "npdiff = %d\n", npdiff);
+	*/
  
 #endif /* SMOOTH_SOURCE */
  
@@ -118,12 +158,26 @@ int grid::SolveForPotential(int level, FLOAT PotentialTime)
 #ifdef UNUSED
   int iteration = 0;
 #endif /* UNUSED */
- 
+
+#ifdef NBODY 
+  if (MultigridSolver(rhs1, PotentialField, GridRank,
+		      GravitatingMassFieldDimension, norm, mean,
+		      GravitySmooth, tol_dim, MAX_ITERATION) == FAIL) {
+    ENZO_FAIL("Error in MultigridDriver.\n");
+  }
+
+  if (MultigridSolver(rhs2, PotentialFieldNoStar, GridRank,
+		      GravitatingMassFieldDimension, norm, mean,
+		      GravitySmooth, tol_dim, MAX_ITERATION) == FAIL) {
+    ENZO_FAIL("Error in MultigridDriver.\n");
+  }
+#else
   if (MultigridSolver(rhs, PotentialField, GridRank,
 		      GravitatingMassFieldDimension, norm, mean,
 		      GravitySmooth, tol_dim, MAX_ITERATION) == FAIL) {
     ENZO_FAIL("Error in MultigridDriver.\n");
   }
+#endif
  
 #ifdef UNUSED
   while (norm/mean > tol_dim) {
@@ -141,9 +195,15 @@ int grid::SolveForPotential(int level, FLOAT PotentialTime)
  
   /* Clean up. */
  
+#ifdef NBODY
+  delete [] rhs1;
+  delete [] rhs2;
+#else
   delete [] rhs;
+#endif
 
 #define NO_POTENTIALDEBUGOUTPUT
+//#define POTENTIALDEBUGOUTPUT
 #ifdef POTENTIALDEBUGOUTPUT
   for (int i=0;i<GridDimension[0]; i++) {
     int igrid = GRIDINDEX_NOGHOST(i,(GridEndIndex[0]+GridStartIndex[0])/2,(GridEndIndex[0]+GridStartIndex[0])/2);
@@ -160,7 +220,7 @@ int grid::SolveForPotential(int level, FLOAT PotentialTime)
   if (debug1) printf("SolvedPotential: Potential minimum: %g \t maximum: %g\n", minPot, maxPot);
   if (debug1) printf("SolvedPotential: GM minimum: %g \t maximum: %g\n", minGM, maxGM);
 
-#endif
+#endif // POTENTIALDEBUGOUTPUT
  
   LCAPERF_STOP("grid_SolveForPotential");
   return SUCCESS;

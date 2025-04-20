@@ -307,6 +307,7 @@ int ExternalBoundary::SetGalaxySimulationBoundary(FLOAT time)
 				  if (BoundaryRank > 2)
 				    BoundaryValue[TENum][dim][0][index] += 0.5*POW(BoundaryValue[Vel3Num][dim][0][index],2);
 				}
+
 				// update RPS Wind Vector for time delay calc
 				if( index == 0.0 ){
 					GalaxySimulationRPSWindVelocity[0] = BoundaryValue[Vel1Num][dim][0][index];

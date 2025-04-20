@@ -37,6 +37,7 @@
 int GetUnits(float *DensityUnits, float *LengthUnits,
              float *TemperatureUnits, float *TimeUnits,
              float *VelocityUnits, FLOAT Time);
+
 int FindField(int f, int farray[], int n);
 extern "C" void FORTRAN_NAME(interpolate)
                              (int *rank, float *pfield, int pdim[],
@@ -429,7 +430,6 @@ int grid::InterpolateFieldValues(grid *ParentGrid
  
     } // end loop over fields
 
-
 #ifdef USE_NAUNET
 
     if (use_interprenorm) {
@@ -694,9 +694,12 @@ int grid::InterpolateFieldValues(grid *ParentGrid
  
   /* Clean up if we have transfered data. */
  
-  if (MyProcessorNumber != ParentGrid->ProcessorNumber)
-
+  if (MyProcessorNumber != ParentGrid->ProcessorNumber) {
     ParentGrid->DeleteAllFields();
+#ifdef NBODY
+    ParentGrid->DeleteAllFieldsNoStar();
+#endif
+	}
  
   return SUCCESS;
 }

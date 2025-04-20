@@ -17,6 +17,7 @@
 #ifdef USE_NAUNET
 #include "naunet_enzo.h"
 #endif
+
 #include "macros_and_parameters.h"
 #include "typedefs.h"
 #include "global_data.h"

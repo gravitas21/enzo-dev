@@ -9,6 +9,7 @@
 /
 ************************************************************************/
 // clang-format off
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -17,6 +18,7 @@
 #ifdef USE_NAUNET
 #include "naunet_enzo.h"
 #endif
+
 #include "ErrorExceptions.h"
 #include "macros_and_parameters.h"
 #include "typedefs.h"

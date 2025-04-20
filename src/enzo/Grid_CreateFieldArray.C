@@ -298,7 +298,7 @@ EnzoArray<float> *grid::CreateFieldArrayFloat(field_type field){
 			       this->GravitatingMassFieldDimension,
 			       sindex, eindex,
 			       cell_width);
-	
+
   	array->Array = this->GravitatingMassField;
       }
       break;

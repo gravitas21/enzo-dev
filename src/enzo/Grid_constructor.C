@@ -26,7 +26,8 @@
 #include "ExternalBoundary.h"
 #include "Grid.h"
 #include "hydro_rk/SuperNova.h"
- 
+
+
 grid::grid()
 {
  
@@ -59,8 +60,12 @@ grid::grid()
     CellWidth[i]                     = NULL;
     ParticlePosition[i]              = NULL;
     ParticleVelocity[i]              = NULL;
-    ParticleAcceleration[i]          = NULL;
     ActiveParticleAcceleration[i]    = NULL;
+    ParticleAcceleration[i]          = NULL;
+#ifdef NBODY
+    ParticleAccelerationNoStar[i]       = NULL;
+    AccelerationFieldNoStar[i]          = NULL;
+#endif
     AccelerationField[i]             = NULL;
     GravitatingMassFieldDimension[i] = 0;
     RandomForcingField[i]            = NULL;
@@ -88,6 +93,9 @@ grid::grid()
       FltUB[i] = NULL;
   }
 
+#ifdef NBODY
+	ParticleAccelerationNoStar[MAX_DIMENSION]       = NULL;
+#endif
   ParticleAcceleration[MAX_DIMENSION]      = NULL;
   ActiveParticleAcceleration[MAX_DIMENSION] = NULL;	
  
@@ -122,9 +130,15 @@ grid::grid()
   ParticleMass                  = NULL;
   ParticleNumber                = NULL;
   ParticleType                  = NULL;
+#ifdef NBODY
+  PotentialFieldNoStar             = NULL;
+  GravitatingMassFieldNoStar       = NULL;
+  GravitatingMassFieldParticlesNoStar = NULL;
+#endif
   PotentialField                = NULL;
   GravitatingMassField          = NULL;
   GravitatingMassFieldParticles = NULL;
+
   GravityBoundaryType           = GravityUndefined;
   for (i = 0; i < MAX_NUMBER_OF_PARTICLE_ATTRIBUTES; i++)
     ParticleAttribute[i] = NULL;

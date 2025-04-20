@@ -42,6 +42,9 @@ int grid::DepositParticlePositionsLocal(FLOAT DepositTime, int DepositField,
  
   int dim, i, size;
   float MassFactor = 1.0, *ParticleMassTemp, *ParticleMassPointer;
+//#ifdef NBODY
+//  float *ParticleMassTempNoStar, *ParticleMassPointerNoStar;
+//#endif
  
   /* If there are no particles, don't deposit anything. */
  
@@ -57,14 +60,39 @@ int grid::DepositParticlePositionsLocal(FLOAT DepositTime, int DepositField,
       MassFactor *= CellWidth[dim][0];
  
   /* If required, Change the mass of particles in this grid. */
- 
-  if (MassFactor != 1.0) {
-    ParticleMassTemp = new float[NumberOfParticles];
-    for (i = 0; i < NumberOfParticles; i++)
-      ParticleMassTemp[i] = ParticleMass[i]*MassFactor;
-    ParticleMassPointer = ParticleMassTemp;
-  } else
-    ParticleMassPointer = ParticleMass;
+	if (MassFactor != 1.0) {
+		ParticleMassTemp = new float[NumberOfParticles];
+		//#ifdef NBODY
+		//		ParticleMassTempNoStar = new float[NumberOfParticles];
+		//#endif
+		for (i = 0; i < NumberOfParticles; i++) {
+			ParticleMassTemp[i] = ParticleMass[i]*MassFactor;
+			/*#ifdef NBODY
+				if ( ParticleType == PARTICLE_TYPE_STAR)
+				ParticleMassTempNoStar[i] = 0;
+				else
+				ParticleMassTempNoStar[i] = ParticleMass[i]*MassFactor;
+				#endif */
+		}
+		ParticleMassPointer = ParticleMassTemp;
+		//#ifdef NBODY
+		//		ParticleMassPointerNoStar = ParticleMassTempNoStar;
+		//#endif
+
+	} else
+		/*#ifdef NBODY
+			{
+			ParticleMassPointer = ParticleMass;
+			for (i = 0; i < NumberOfParticles; i++) {
+			if ( ParticleType == PARTICLE_TYPE_STAR)
+			ParticleMassTempNoStar[i] = 0;
+			else
+			ParticleMassTempNoStar[i] = ParticleMass[i];
+			}
+			}
+			#else*/
+		ParticleMassPointer = ParticleMass;
+	//#endif
 
   /* Allocate and fill the ActiveParticleMassPointer, obtain
      ActiveParticlePosition from the grid object */
@@ -104,11 +132,17 @@ int grid::DepositParticlePositionsLocal(FLOAT DepositTime, int DepositField,
   /* Deposit particles. */
  
 //  fprintf(stderr, "----DPP Call this->DepositPositions with NP = %"ISYM"\n", NumberOfParticles);
- 
+/*#ifdef NBODY 
+  if (this->DepositPositions(ParticlePosition, ParticleMassPointer, ParticleMassPointerNoStar,
+			     NumberOfParticles, DepositField) == FAIL) {
+    ENZO_FAIL("Error in grid->DepositPositions\n");
+  }
+#else*/
   if (this->DepositPositions(ParticlePosition, ParticleMassPointer,
 			     NumberOfParticles, DepositField) == FAIL) {
     ENZO_FAIL("Error in grid->DepositPositions\n");
   }
+//#endif
 
   if (this->DepositPositions(ActiveParticlePosition, ActiveParticleMassPointer,
                  NumberOfActiveParticles, DepositField) == FAIL) {

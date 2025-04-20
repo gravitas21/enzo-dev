@@ -107,7 +107,6 @@ int grid::DetachAcceleration(){
 
   }
 
-
   return SUCCESS;
 }
 

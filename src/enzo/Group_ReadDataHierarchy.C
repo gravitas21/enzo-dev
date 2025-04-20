@@ -225,6 +225,7 @@ int Group_ReadDataHierarchy(FILE *fptr, hid_t Hfile_id, HierarchyEntry *Grid,
                                      MetaData.PPMFlatteningParameter,
                                      MetaData.PPMDiffusionParameter,
                                      MetaData.PPMSteepeningParameter);
+
   if (SelfGravity) {
     if (Grid->GridData->ReturnGravityBoundaryType() == GravityUndefined) {
       if (Grid->ParentGrid == NULL) // Top grid

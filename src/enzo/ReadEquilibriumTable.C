@@ -70,7 +70,7 @@ int ReadEquilibriumTable(char* name, FLOAT Time)
   } // end root
 
 #ifdef USE_MPI
-  MPI_Bcast(size, 1, MPI_LONG_INT, ROOT_PROCESSOR, MPI_COMM_WORLD);
+  MPI_Bcast(size, 1, MPI_LONG_INT, ROOT_PROCESSOR, enzo_comm);
 #endif
 
   EquilibriumTable.dim_size = *size; // pointer to int
@@ -396,25 +396,25 @@ int ReadEquilibriumTable(char* name, FLOAT Time)
 #ifdef USE_MPI
   int table_size = EquilibriumTable.dim_size * EquilibriumTable.dim_size;
   if (MultiSpecies) {
-  MPI_Bcast(EquilibriumTable.HI, table_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
-  MPI_Bcast(EquilibriumTable.HII, table_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
-  MPI_Bcast(EquilibriumTable.HeI, table_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
-  MPI_Bcast(EquilibriumTable.HeII, table_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
-  MPI_Bcast(EquilibriumTable.HeIII, table_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
-  MPI_Bcast(EquilibriumTable.de, table_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
+  MPI_Bcast(EquilibriumTable.HI, table_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
+  MPI_Bcast(EquilibriumTable.HII, table_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
+  MPI_Bcast(EquilibriumTable.HeI, table_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
+  MPI_Bcast(EquilibriumTable.HeII, table_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
+  MPI_Bcast(EquilibriumTable.HeIII, table_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
+  MPI_Bcast(EquilibriumTable.de, table_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
   if (MultiSpecies > 1) {
-  MPI_Bcast(EquilibriumTable.HM, table_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
-  MPI_Bcast(EquilibriumTable.H2I, table_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
-  MPI_Bcast(EquilibriumTable.H2II, table_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
+  MPI_Bcast(EquilibriumTable.HM, table_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
+  MPI_Bcast(EquilibriumTable.H2I, table_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
+  MPI_Bcast(EquilibriumTable.H2II, table_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
   }
   if (MultiSpecies > 2) {
-  MPI_Bcast(EquilibriumTable.DI, table_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
-  MPI_Bcast(EquilibriumTable.DII, table_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
-  MPI_Bcast(EquilibriumTable.HDI, table_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
+  MPI_Bcast(EquilibriumTable.DI, table_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
+  MPI_Bcast(EquilibriumTable.DII, table_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
+  MPI_Bcast(EquilibriumTable.HDI, table_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
   }
   }
-  MPI_Bcast(EquilibriumTable.density, EquilibriumTable.dim_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
-  MPI_Bcast(EquilibriumTable.temperature, EquilibriumTable.dim_size, MPI_DOUBLE, ROOT_PROCESSOR, MPI_COMM_WORLD);
+  MPI_Bcast(EquilibriumTable.density, EquilibriumTable.dim_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
+  MPI_Bcast(EquilibriumTable.temperature, EquilibriumTable.dim_size, MPI_DOUBLE, ROOT_PROCESSOR, enzo_comm);
 #endif
   
   /* convert from cgs to code units */
@@ -423,6 +423,26 @@ int ReadEquilibriumTable(char* name, FLOAT Time)
     //EquilibriumTable.temperature[i] /= TemperatureUnits; // keep in K
   }
 
+  // for (int i=0; i<EquilibriumTable.dim_size*EquilibriumTable.dim_size; ++i){
+  //   if (MultiSpecies) {
+  //     EquilibriumTable.HI[i] /= DensityUnits;
+  //     EquilibriumTable.HII[i] /= DensityUnits;
+  //     EquilibriumTable.HeI[i] /= DensityUnits;
+  //     EquilibriumTable.HeII[i] /= DensityUnits;
+  //     EquilibriumTable.HeIII[i] /= DensityUnits;
+  //     EquilibriumTable.de[i] /= DensityUnits;
+  //     if (MultiSpecies > 1) {
+  //       EquilibriumTable.HM[i] /= DensityUnits;
+  //       EquilibriumTable.H2I[i] /= DensityUnits;
+  //       EquilibriumTable.H2II[i] /= DensityUnits;
+  //     }
+  //     if (MultiSpecies > 2) {
+  //       EquilibriumTable.DI[i] /= DensityUnits;
+  //       EquilibriumTable.DII[i] /= DensityUnits;
+  //       EquilibriumTable.HDI[i] /= DensityUnits;
+  //     }
+  //   }
+  // }
 
   return SUCCESS;
 }

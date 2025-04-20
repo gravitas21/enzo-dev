@@ -189,7 +189,6 @@ c
      &              mass(n)*(1._RKIND-dx)*(1._RKIND-dy)*(1._RKIND-dz)
 c     
          enddo
-      
       endif
 c
       return

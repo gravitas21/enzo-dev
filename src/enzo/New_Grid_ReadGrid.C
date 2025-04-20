@@ -91,15 +91,26 @@ int grid::Group_ReadGrid(FILE *fptr, int GridID, HDF5_hid_t file_id,
     {"particle_position_x", "particle_position_y", "particle_position_z"};
   char *ParticleVelocityLabel[] =
     {"particle_velocity_x", "particle_velocity_y", "particle_velocity_z"};
+#ifdef NBODY
 #ifdef WINDS
-  char *ParticleAttributeLabel[] =
-    {"creation_time", "dynamical_time", "metallicity_fraction", "particle_jet_x", 
-     "particle_jet_y", "particle_jet_z", "typeia_fraction"};
+	char *ParticleAttributeLabel[] = 
+	{"creation_time", "dynamical_time", "metallicity_fraction", "particle_jet_x", 
+		"particle_jet_y", "particle_jet_z", "typeia_fraction", "acc_x", "acc_y", "acc_z"};
 #else
-  char *ParticleAttributeLabel[] = 
-    {"creation_time", "dynamical_time", "metallicity_fraction", "typeia_fraction"};
+	char *ParticleAttributeLabel[] = 
+	{"creation_time", "dynamical_time", "metallicity_fraction", "typeia_fraction", 
+		"acc_x", "acc_y", "acc_z"};
 #endif
-
+#else
+#ifdef WINDS
+	char *ParticleAttributeLabel[] = 
+	{"creation_time", "dynamical_time", "metallicity_fraction", "particle_jet_x", 
+		"particle_jet_y", "particle_jet_z", "typeia_fraction"};
+#else
+	char *ParticleAttributeLabel[] = 
+	{"creation_time", "dynamical_time", "metallicity_fraction", "typeia_fraction"};
+#endif
+#endif
   int ReadOnlyActive = TRUE;
   if ((ReadEverything == TRUE) || (ReadGhostZones == TRUE)) {
     ReadOnlyActive = FALSE;
@@ -244,7 +255,9 @@ int grid::Group_ReadGrid(FILE *fptr, int GridID, HDF5_hid_t file_id,
     if (SelfGravity) {
       // Don't fail if not there because self-gravity may be turned on during restart. In that 
       // case, we set the gravity boundary in Group_ReadDataHierarchy().
-      fscanf(fptr, "GravityBoundaryType = %"ISYM"\n",&GravityBoundaryType);
+      if (fscanf(fptr, "GravityBoundaryType = %"ISYM"\n",&GravityBoundaryType) != 1) {
+	      ENZO_FAIL("Error reading GravityBoundaryType.");
+      }
     }
 
     // If HierarchyFile has different Ghostzones (which should be a parameter not a macro ...)
@@ -405,6 +418,48 @@ int grid::Group_ReadGrid(FILE *fptr, int GridID, HDF5_hid_t file_id,
 
     }
 
+    if (HydroMethod == MHD_RK) { // This is the MHD with Dedner divergence cleaning that needs an extra field
+      // 
+
+   
+      int activesize = 1;
+      for (int dim = 0; dim < GridRank; dim++)
+	activesize *= (GridDimension[dim]-2*NumberOfGhostZones);
+      
+      /* if we restart from a different solvers output without a Phi Field create here and set to zero */
+      int PhiNum; 
+      if ((PhiNum = FindField(PhiField, FieldType, NumberOfBaryonFields)) < 0) {
+	fprintf(stderr, "Starting with Dedner MHD method with no Phi field. \n");
+	fprintf(stderr, "Adding it in Grid_ReadGrid.C \n");
+	char *PhiName = "Phi";
+	PhiNum = NumberOfBaryonFields;
+	int PhiToAdd = PhiField;
+	this->AddFields(&PhiToAdd, 1);
+	DataLabel[PhiNum] = PhiName;
+      } else { 
+	if (0) 
+	  for (int n = 0; n < size; n++)
+	    BaryonField[PhiNum][n] = 0.;
+      }
+
+      /* if we restart from a different solvers output without a Phi_pField 
+	 and yet want to use the divergence cleaning, create here and set to zero */
+      if (UsePoissonDivergenceCleaning) {
+	int Phi_pNum; 
+	if ((Phi_pNum = FindField(Phi_pField, FieldType, NumberOfBaryonFields)) < 0) {
+	  fprintf(stderr, "Want to use divergence cleaning with no Phi_p field. \n");
+	  fprintf(stderr, "Adding it in Grid_ReadGrid.C \n");
+	  char *Phi_pName = "Phi_p";
+	  Phi_pNum = NumberOfBaryonFields;
+	  int Phi_pToAdd = Phi_pField;
+	  this->AddFields(&Phi_pToAdd, 1);
+	  DataLabel[Phi_pNum] = Phi_pName;
+	}
+      }
+
+      
+    } /* if HydroMethod == MHD */
+
     delete [] temp;
  
   }  // end:   if (NumberOfBaryonFields > 0 && ReadData &&
@@ -526,29 +581,55 @@ int grid::Group_ReadGrid(FILE *fptr, int GridID, HDF5_hid_t file_id,
  
       int abs_type;
       for (i = 0; i < NumberOfParticles; i++) {
-	abs_type = ABS(ParticleType[i]);
-        if (abs_type < PARTICLE_TYPE_GAS ||
-            abs_type > NUM_PARTICLE_TYPES-1) {
-          ENZO_VFAIL("file: %s: particle %"ISYM" has unknown type %"ISYM"\n", name, i, ParticleType[i])
-        }
+	      abs_type = ABS(ParticleType[i]);
+#define NBODY
+#ifdef NBODY
+	      if (abs_type < PARTICLE_TYPE_GAS || (abs_type > NUM_PARTICLE_TYPES-1
+				      && abs_type < PARTICLE_TYPE_NBODY) || abs_type > PARTICLE_TYPE_NBODY_REMOVE)
+#else
+	      if (abs_type < PARTICLE_TYPE_GAS || abs_type > NUM_PARTICLE_TYPES-1)
+#endif
+	      {
+		      ENZO_VFAIL("file: %s: particle %"ISYM" has unknown type %"ISYM"\n", name, i, ParticleType[i])
+	      }
+#ifdef NBODY
+	      if (NbodyRestartStarToNbody && (ParticleType[i] == PARTICLE_TYPE_STAR 
+				      || ParticleType[i] == 12 || ParticleType[i] == 13 || ParticleType[i] == 14)) {
+		      ParticleType[i] = PARTICLE_TYPE_NBODY;
+	      }
+	      if (ParticleType[i] == PARTICLE_TYPE_NBODY_NEW) {
+		      ParticleType[i] = PARTICLE_TYPE_NBODY;
+	      }
+#endif
       }
- 
-    } else {
- 
-      /* Otherwise create the type. */
- 
-      for (i = 0; i < NumberOfParticles; i++)
-        ParticleType[i] = ReturnParticleType(i);
- 
-    }
- 
- 
-    /* Read ParticleAttributes. */
-    if (AddParticleAttributes) {
-      for (j = 0; j < NumberOfParticleAttributes; j++) {
-	ParticleAttribute[j] = new float[NumberOfParticles];
-	for (i=0; i < NumberOfParticles; i++)
-	  ParticleAttribute[j][i] = 0;
+      } else {
+
+	      /* Otherwise create the type. */
+
+	      for (i = 0; i < NumberOfParticles; i++)
+	      {
+#ifdef NBODY
+		      if (ReturnParticleType(i) == PARTICLE_TYPE_NBODY_NEW) { 
+			      ParticleType[i] = PARTICLE_TYPE_NBODY;
+		      }
+		      else if (NbodyRestartStarToNbody && (ReturnParticleType(i) == PARTICLE_TYPE_STAR 
+					      || ReturnParticleType(i) == 12 || ReturnParticleType(i) == 13 || ReturnParticleType(i) == 14)) {
+			      ParticleType[i] = PARTICLE_TYPE_NBODY;
+		      }
+		      else {
+			      ParticleType[i] = ReturnParticleType(i);
+		      }
+#else 
+		      ParticleType[i] = ReturnParticleType(i);
+#endif
+	      }
+      }
+      /* Read ParticleAttributes. */
+      if (AddParticleAttributes) {
+	      for (j = 0; j < NumberOfParticleAttributes; j++) {
+		      ParticleAttribute[j] = new float[NumberOfParticles];
+		      for (i=0; i < NumberOfParticles; i++)
+   	                ParticleAttribute[j][i] = 0;
       }
     } else {
     for (j = 0; j < NumberOfParticleAttributes; j++) {
@@ -848,6 +929,9 @@ int grid::ReadExtraFields(hid_t group_id)
     float *temp = new float[size];
     for (dim = 0; dim < GridRank; dim++) {
       if(this->AccelerationField[dim] != NULL) {
+#ifdef NBODY
+        delete this->AccelerationFieldNoStar[dim];
+#endif
         delete this->AccelerationField[dim];
       }
       snprintf(acc_name, 254, "AccelerationField%"ISYM, dim);
@@ -869,9 +953,17 @@ int grid::ReadExtraFields(hid_t group_id)
         size *= GravitatingMassFieldDimension[dim];
         GMFOutDims[GridRank-dim-1] = GravitatingMassFieldDimension[dim];
     }
-      if(this->GravitatingMassField != NULL)
+      if(this->GravitatingMassField != NULL) {
+#ifdef NBODY
+	delete this->GravitatingMassFieldNoStar;
+#endif
         delete this->GravitatingMassField;
+      }
       //fprintf(stderr, "ALLOCATING %"ISYM" for GMF\n", size);
+#ifdef NBODY
+      //this->GravitatingMassField = new float*[2];
+      this->GravitatingMassFieldNoStar = new float[size];
+#endif
       this->GravitatingMassField = new float[size];
       this->read_dataset(GridRank, GMFOutDims, "GravitatingMassField",
           group_id, HDF5_REAL, (VOIDP) this->GravitatingMassField, FALSE);
@@ -887,10 +979,17 @@ int grid::ReadExtraFields(hid_t group_id)
         size *= GravitatingMassFieldDimension[dim];
         GMFOutDims[GridRank-dim-1] = GravitatingMassFieldDimension[dim];
     }
-      if(this->PotentialField != NULL)
+      if(this->PotentialField != NULL) {
+#ifdef NBODY
+        delete this->PotentialFieldNoStar;
+#endif
         delete this->PotentialField;
+			}
       //fprintf(stderr, "ALLOCATING %"ISYM" for PF\n", size);
-      this->PotentialField = new float[size];
+#ifdef NBODY
+	this->PotentialFieldNoStar = new float[size];
+#endif
+	this->PotentialField = new float[size];
       this->read_dataset(GridRank, GMFOutDims, "PotentialField",
           group_id, HDF5_REAL, (VOIDP) this->PotentialField, FALSE);
   }

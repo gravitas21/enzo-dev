@@ -90,14 +90,27 @@ int grid::WriteGrid(FILE *fptr, char *base_name, int grid_id)
      {"particle_position_x", "particle_position_y", "particle_position_z"};
   char *ParticleVelocityLabel[] =
      {"particle_velocity_x", "particle_velocity_y", "particle_velocity_z"};
+#ifdef NBODY
 #ifdef WINDS
-    char *ParticleAttributeLabel[] = 
-      {"creation_time", "dynamical_time", "metallicity_fraction", "particle_jet_x", 
-       "particle_jet_y", "particle_jet_z", "typeia_fraction"};
+  char *ParticleAttributeLabel[] = 
+     {"creation_time", "dynamical_time", "metallicity_fraction", "particle_jet_x", 
+	     "particle_jet_y", "particle_jet_z", "typeia_fraction", "acc_x", "acc_y", "acc_z"};
 #else
-    char *ParticleAttributeLabel[] = 
-      {"creation_time", "dynamical_time", "metallicity_fraction", "typeia_fraction"};
+  char *ParticleAttributeLabel[] = 
+     {"creation_time", "dynamical_time", "metallicity_fraction", "typeia_fraction", 
+	     "acc_x", "acc_y", "acc_z"};
 #endif
+#else
+#ifdef WINDS
+  char *ParticleAttributeLabel[] = 
+     {"creation_time", "dynamical_time", "metallicity_fraction", "particle_jet_x", 
+	     "particle_jet_y", "particle_jet_z", "typeia_fraction"};
+#else
+  char *ParticleAttributeLabel[] = 
+     {"creation_time", "dynamical_time", "metallicity_fraction", "typeia_fraction"};
+#endif
+#endif
+
   char *SmoothedDMLabel[] = {"Dark_Matter_Density", "Velocity_Dispersion",
 			     "Particle_x-velocity", "Particle_y-velocity",
 			     "Particle_z-velocity"};
@@ -794,14 +807,17 @@ int grid::WriteGrid(FILE *fptr, char *base_name, int grid_id)
       if (SelfGravity && NumberOfParticles > 0) {
 	this->InitializeGravitatingMassFieldParticles(RefineBy);
 	this->ClearGravitatingMassFieldParticles();
+#ifdef NBODY
+	this->ClearGravitatingMassFieldParticlesNoStar();
+#endif
 	this->DepositParticlePositions(this, Time,
-				       GRAVITATING_MASS_FIELD_PARTICLES);
+				       GRAVITATING_MASS_FIELD_PARTICLES,FALSE);
       }
  
       /* If present, write out the GravitatingMassFieldParticles. */
  
       if (GravitatingMassFieldParticles != NULL) {
- 
+
 	/* Set dimensions. */
  
 	int StartIndex[] = {0,0,0}, EndIndex[] = {0,0,0};

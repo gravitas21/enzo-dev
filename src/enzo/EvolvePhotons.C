@@ -276,6 +276,8 @@ int EvolvePhotons(TopGridData *MetaData, LevelHierarchyEntry *LevelArray[],
       continue;
     }
 
+    if (debug) fprintf(stdout, "%"ISYM" SRC(s)\n", NumberOfSources);
+
   /* Temporarily load balance grids according to the number of ray
      segments.  We'll move the grids back at the end of this
      routine */

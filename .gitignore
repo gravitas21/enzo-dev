@@ -9,6 +9,9 @@ syntax: glob
 *.bin
 *.ipch
 .vscode
+*.swp
+*.out
+*.dat
 
 bin/enzo
 bin/inits
@@ -60,3 +63,4 @@ run/results.js
 Make.mach.claire-linux
 *__test_standard.py
 run/test_output/
+method-paper-joss-2019

@@ -21,6 +21,9 @@
 #ifndef GLOBAL_DATA_DEFINED__
 #define GLOBAL_DATA_DEFINED__
 
+#ifdef USE_MPI
+#include "mpi.h"
+#endif
 #include <stdio.h>
 #ifdef MEMORY_POOL
 #include "MemoryPool.h"
@@ -40,6 +43,43 @@ class EnzoProblemType;
                           1 = Equalize processor memory count
                          2 = Load balance only on a node
 */
+
+#ifdef NBODY
+#define HERMITE_ORDER 4
+EXTERN int NumberOfNbodyParticles;
+EXTERN int NumberOfNewNbodyParticles;
+EXTERN int NumberOfNbodyParticlesOld;
+EXTERN int *NbodyParticleID;
+EXTERN int *NbodyParticleIDOld;
+EXTERN int *NbodyParticleIDTemp;
+EXTERN int *NewNbodyParticleIDTemp;
+EXTERN double *NbodyParticleMass;
+EXTERN double *NbodyParticlePosition[MAX_DIMENSION];
+EXTERN double *NbodyParticleVelocity[MAX_DIMENSION];
+EXTERN double *NbodyParticleAcceleration[MAX_DIMENSION][HERMITE_ORDER];
+EXTERN double *NbodyParticleAccelerationOld[MAX_DIMENSION][HERMITE_ORDER];
+EXTERN double *NbodyParticleAccelerationNoStar[MAX_DIMENSION];
+EXTERN double NbodyClusterPosition[MAX_DIMENSION+1];
+EXTERN int NbodyFirst;
+EXTERN int isNbodyParticleIdentification;
+EXTERN int isIdentificationOnTheFly;
+EXTERN double NbodySmoothingLength;
+EXTERN double NbodyTimeStepConstant;
+EXTERN double NbodyNeighborRadius;
+EXTERN int NbodyFixNumNeighbor;
+EXTERN int NbodyMaxNumNeighbor;
+EXTERN int NbodyBinaryRegularization;
+EXTERN double NbodyBinaryDistance;
+EXTERN double NbodyBinaryTimeStep;
+EXTERN int NbodyNewStarToNbody;
+EXTERN int NbodyRestartStarToNbody;
+
+/* by YS, MPI COMMs*/
+extern MPI_Comm enzo_comm;
+extern MPI_Comm nbody_comm;
+extern MPI_Comm inter_comm;
+#endif
+
 EXTERN int NumberOfGhostZones;
 EXTERN int LoadBalancing;
 EXTERN int LoadBalancingCycleSkip;
@@ -582,6 +622,7 @@ EXTERN FLOAT EvolveCoolingRefineRegionRightEdge[MAX_REFINE_REGIONS][3]; // right
 
 EXTERN int MyProcessorNumber;
 EXTERN int NumberOfProcessors;
+EXTERN int TotalNumberOfProcessors;
 EXTERN float CommunicationTime;
 
 /* Parameter to indicate if top grid should do parallel IO
@@ -958,6 +999,9 @@ EXTERN float DrivingEfficiency;
 
 /* Parameters to use CUDA extensions */ 
 EXTERN int UseCUDA;
+
+/* Paramters for Nbody comutation */
+EXTERN int UseNBODY;
 
 /* End of Stanford block */
 

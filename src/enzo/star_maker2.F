@@ -69,6 +69,7 @@ c    masseff - gas-to-mass conversion efficiency ( 0<=masseff<=1 )
 c    smthresh - star mass threshold (only creates stars with mass >
 c        smthresh unless (random number) < starmass/smthresh )
 c    mintdyn  - minimum dynamical time, in years
+c    usejeans - use jeans mass check 
 c    level - current level of refinement
 c    procnum - processor number (for output)
 c    imetalSNIa - SN Ia metallicity flag (0 - none, 1 - yes)

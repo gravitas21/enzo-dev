@@ -27,8 +27,8 @@
 int grid::ClearParticleAccelerations()
 {
  
-  int i, dim;
- 
+  int i, j, dim;
+
   if (NumberOfParticles > 0)
  
     /* Loop over active dimension */
@@ -49,30 +49,70 @@ int grid::ClearParticleAccelerations()
       for (i = 0; i < NumberOfParticles; i++)
 	ParticleAcceleration[dim][i] = 0.0;
  
+#ifdef NBODY 
+      if (ParticleAccelerationNoStar[dim] != NULL)
+	      fprintf(stderr, "ClearStarBackGroundAcceleration: Field not NULL.\n");
+       
+      /* Allocate accleration field. */
+      ParticleAccelerationNoStar[dim] = new float[NumberOfParticles]; //by YS, we have to change this to
+#endif
+     /* Clear it. */
+      //for (i = 0; i < NumberOfStars; i++) {
+        //number of nbody stars
+      //}
+	      
+      for (i = 0; i < NumberOfParticles; i++) {
+	      ParticleAcceleration[dim][i] = 0.0;
+#ifdef NBODY
+	      ParticleAccelerationNoStar[dim][i] = 0.0; //by YS, we have to change this to
+#endif
+      }
     }
 
   if (NumberOfActiveParticles > 0)
 
     /* Loop over active dimension */
-    
     for (dim = 0; dim < GridRank+ComputePotential; dim++) {
-      
+
       /* Error check. */
-      
       if (ActiveParticleAcceleration[dim] != NULL)
         fprintf(stderr, "ClearParticleAccelerations: Field not NULL.\n");
-      
+
       /* Allocate accleration field. */
-      
       ActiveParticleAcceleration[dim] = new float[NumberOfActiveParticles];
-      
+
       /* Clear it. */
-      
       for (i = 0; i < NumberOfActiveParticles; i++)
         ActiveParticleAcceleration[dim][i] = 0.0;
-      
     }
- 
+
   return SUCCESS;
 }
+
+#ifdef NBODY
  
+int grid::ClearParticleAccelerationsNoStar()
+{
+	int i, j, dim;
+	
+	if (NumberOfParticles > 0)
+		/* Loop over active dimension */
+		for (dim = 0; dim < GridRank+ComputePotential; dim++) {
+			/* Error check. */
+			if (ParticleAccelerationNoStar[dim] != NULL)
+				fprintf(stderr, "ClearParticleAccelerations: Field not NULL.\n");
+
+			/* Allocate accleration field. */
+			ParticleAccelerationNoStar[dim] = new float[NumberOfParticles]; 
+			//by YS, we have to change this to number of nbody stars
+			
+			/* Clear it. */
+			for (i = 0; i < NumberOfParticles; i++) {
+				ParticleAccelerationNoStar[dim][i] = 0;  
+				//by YS, we have to change this to number of nbody stars
+			}
+		}
+
+	return SUCCESS;
+}
+#endif

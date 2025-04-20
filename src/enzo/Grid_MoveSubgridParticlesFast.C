@@ -192,20 +192,22 @@ int grid::MoveSubgridParticlesFast(int NumberOfSubgrids, grid* ToGrids[],
   } // end: if (MyProcessorNumber)
  
   /* Transfer particles from fake to real grids (and clean up). */
- 
   for (subgrid = 0; subgrid < NumberOfSubgrids; subgrid++)
     if ((MyProcessorNumber == ProcessorNumber ||
-         MyProcessorNumber == ToGrids[subgrid]->ProcessorNumber) &&
+	 MyProcessorNumber == ToGrids[subgrid]->ProcessorNumber) &&
 	ProcessorNumber != ToGrids[subgrid]->ProcessorNumber)
-      if (ParticlesToMove[subgrid] != 0) {
-	if (this->CommunicationSendParticles(ToGrids[subgrid],
-             ToGrids[subgrid]->ProcessorNumber, 0, ParticlesToMove[subgrid], 0)
-	    == FAIL) {
-	  ENZO_FAIL("Error in grid->CommunicationSendParticles.\n");
-	}
-	if (MyProcessorNumber == ProcessorNumber)
-
-	  ToGrids[subgrid]->DeleteAllFields();
+       if (ParticlesToMove[subgrid] != 0) {
+	 if (this->CommunicationSendParticles(ToGrids[subgrid],
+	      ToGrids[subgrid]->ProcessorNumber, 0, ParticlesToMove[subgrid], 0)
+	     == FAIL) {
+	   ENZO_FAIL("Error in grid->CommunicationSendParticles.\n");
+	 }
+	 if (MyProcessorNumber == ProcessorNumber) {
+		 ToGrids[subgrid]->DeleteAllFields();
+#ifdef NBODY
+		 ToGrids[subgrid]->DeleteAllFieldsNoStar();
+#endif
+	 }
       }
  
   delete [] ParticlesToMove;

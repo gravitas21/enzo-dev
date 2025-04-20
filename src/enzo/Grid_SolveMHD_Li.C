@@ -200,8 +200,9 @@ int grid::SolveMHD_Li(int CycleNumber, int NumberOfSubgrids,
               field_line[ ii + line_size*7] = BaryonField[TENum][index_bf];
               field_line[ ii + line_size*8] = pressure[index_bf]/POW(BaryonField[DensNum][index_bf],Gamma-1);
             }
-            if( GravityOn )
-              gravity_line[ ii ] = AccelerationField[0][index_bf];
+            if( GravityOn ){
+		    gravity_line[ ii ] = AccelerationField[0][index_bf];
+	    }
             if( NumberOfColours > 0){
               for( nColour=0; nColour<NumberOfColours; nColour++){
                 colour_line[ ii + line_size*nColour ] = BaryonField[ colnum[nColour] ][index_bf];
@@ -329,9 +330,10 @@ int grid::SolveMHD_Li(int CycleNumber, int NumberOfSubgrids,
             for( nColour=0; nColour<NumberOfColours; nColour++){
               colour_line[ jj + line_size*nColour ] = BaryonField[ colnum[nColour] ][index_bf];
             }
-   
-            if( GravityOn )
-              gravity_line[ jj ] = AccelerationField[1][index_bf];
+ 
+            if( GravityOn ) {
+		    gravity_line[ jj ] = AccelerationField[1][index_bf];
+	    }
           }
           for( jj=1; jj<GridDimension[1]; jj++){
              diffusion_line[jj] = 0.0;

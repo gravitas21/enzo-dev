@@ -85,6 +85,12 @@ const field_type
   Acceleration0   = 31,
   Acceleration1   = 32,
   Acceleration2   = 33,
+#ifdef NBODY
+  GravPotentialNoStar   = 230,
+  Acceleration0NoStar   = 231,
+  Acceleration1NoStar   = 232,
+  Acceleration2NoStar   = 233,
+#endif
   RadPressure0    = 34,
   RadPressure1    = 35,
   RadPressure2    = 36,
@@ -120,6 +126,11 @@ const field_type
   AccelerationField1    = 58, 
   AccelerationField2    = 59, 
   AccelerationField3    = 60,
+#ifdef NBODY
+  AccelerationField1NoStar    = 258, 
+  AccelerationField2NoStar    = 259, 
+  AccelerationField3NoStar    = 260,
+#endif
 
   Galaxy1Colour          = 61,
   Galaxy2Colour          = 62,
@@ -283,7 +294,6 @@ const field_type
     FieldUndefined = 104;
 #endif
 
-
 /*
 enum field_type {Density, TotalEnergy, InternalEnergy, Pressure,
 		 Velocity1, Velocity2, Velocity3, 
@@ -421,7 +431,9 @@ const star_type
   Kravtsov = PARTICLE_TYPE_STAR,
   CenOstriker = PARTICLE_TYPE_STAR,
   AccretingParticle = PARTICLE_TYPE_MUST_REFINE;
-
+#ifdef NBODY
+const star_type  NbodyStar = PARTICLE_TYPE_NBODY_NEW; // by YS
+#endif
 /* Define a float/int union. */
 
 union float_int {

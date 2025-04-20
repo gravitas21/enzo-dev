@@ -220,7 +220,6 @@ int grid::DrivenFlowInitializeGrid(float DrivenFlowDensity,
 #endif
   }
 
-
   /* Return if this doesn't concern us. */
 
   if (ProcessorNumber != MyProcessorNumber)
@@ -339,7 +338,6 @@ int grid::DrivenFlowInitializeGrid(float DrivenFlowDensity,
     }
   }
 #endif
-
 
   return SUCCESS;
 }

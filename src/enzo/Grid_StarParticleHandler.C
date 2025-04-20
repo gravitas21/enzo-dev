@@ -847,14 +847,21 @@ int grid::StarParticleHandler(HierarchyEntry* SubgridPointer, int level,
       tg->ParticleAttribute[2],
       &StarMakerTypeIaSNe, BaryonField[MetalIaNum], tg->ParticleAttribute[3]);
 
-      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++)
-         tg->ParticleType[i] = NormalStarType;
-
-         /* If StarFormationOncePerRootGridTimeStep, reset
-	      this::MakeStars to 0, to prevent further star formation until
-	      next top level time step has been taken. */
+      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++) {
+#ifdef NBODY
+	      if (NbodyNewStarToNbody)
+	    	      tg->ParticleType[i] = NbodyStar;
+	      else
+	    	      tg->ParticleType[i] = NormalStarType;
+#else
+	      tg->ParticleType[i] = NormalStarType;
+#endif
+      }
+         /* If StarFormationOncePerRootGridTimeStep, reset 
+	  * this::MakeStars to 0, to prevent further star formation until
+	  * next top level time step has been taken. */
       if(StarFormationOncePerRootGridTimeStep)
-         this->MakeStars = 0;
+	               this->MakeStars = 0;
     }
 
     if (STARMAKE_METHOD(MOM_STAR)) {
@@ -885,8 +892,16 @@ int grid::StarParticleHandler(HierarchyEntry* SubgridPointer, int level,
        &StarMakerTypeIaSNe, BaryonField[MetalIaNum], tg->ParticleAttribute[3],
        &StarMakerExplosionDelayTime);
 
-      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++)
-          tg->ParticleType[i] = NormalStarType;
+      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++) {
+#ifdef NBODY
+	      if (NbodyNewStarToNbody)
+		      tg->ParticleType[i] = NbodyStar;
+	      else
+		      tg->ParticleType[i] = NormalStarType;
+#else
+	      tg->ParticleType[i] = NormalStarType;
+#endif
+      }
     }
 
     if (STARMAKE_METHOD(UNIGRID_STAR)) {
@@ -916,8 +931,16 @@ int grid::StarParticleHandler(HierarchyEntry* SubgridPointer, int level,
        tg->ParticleAttribute[2],
        &StarMakerTypeIaSNe, BaryonField[MetalIaNum], tg->ParticleAttribute[3]);
 
-      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++)
-          tg->ParticleType[i] = NormalStarType;
+      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++) {
+#ifdef NBODY
+	      if (NbodyNewStarToNbody)
+		      tg->ParticleType[i] = NbodyStar;
+	      else
+		      tg->ParticleType[i] = NormalStarType;
+#else
+	      tg->ParticleType[i] = NormalStarType;
+#endif
+      }
     }
 
     if (STARMAKE_METHOD(KRAVTSOV_STAR)) {
@@ -945,10 +968,17 @@ int grid::StarParticleHandler(HierarchyEntry* SubgridPointer, int level,
        tg->ParticleMass, tg->ParticleAttribute[1], tg->ParticleAttribute[0],
        tg->ParticleAttribute[2],
        &StarMakerTypeIaSNe, BaryonField[MetalIaNum], tg->ParticleAttribute[3]);
-
-
-      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++)
-          tg->ParticleType[i] = NormalStarType;
+      
+      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++) {
+#ifdef NBODY
+	      if (NbodyNewStarToNbody)
+		      tg->ParticleType[i] = NbodyStar;
+	      else
+		      tg->ParticleType[i] = NormalStarType;
+#else
+	      tg->ParticleType[i] = NormalStarType;
+#endif
+      }
     }
 
     if (STARMAKE_METHOD(POP3_STAR)) {
@@ -976,6 +1006,12 @@ int grid::StarParticleHandler(HierarchyEntry* SubgridPointer, int level,
 	 tg->ParticleAttribute[2], tg->ParticleType, &SingleStarType, 
 	 &RadiationData.IntegratedStarFormation, &RadiativeTransfer);
 
+      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++) {
+#ifdef NBODY
+	      if (NbodyNewStarToNbody)
+		      tg->ParticleType[i] = NbodyStar;
+#endif
+      }
     }
 
     if (STARMAKE_METHOD(COLORED_POP3_STAR)) {
@@ -998,6 +1034,13 @@ int grid::StarParticleHandler(HierarchyEntry* SubgridPointer, int level,
          tg->ParticlePosition[0], tg->ParticlePosition[1], tg->ParticlePosition[2],
          tg->ParticleVelocity[0], tg->ParticleVelocity[1], tg->ParticleVelocity[2],
          tg->ParticleMass, tg->ParticleAttribute[2], tg->ParticleType, &ColorStar);
+
+	for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++) {
+#ifdef NBODY
+		if (NbodyNewStarToNbody)
+			tg->ParticleType[i] = NbodyStar;
+#endif
+	}
          
     }
 
@@ -1111,7 +1154,14 @@ int grid::StarParticleHandler(HierarchyEntry* SubgridPointer, int level,
       }
 
       for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++) {
-        tg->ParticleType[i] = NormalStarType;
+#ifdef NBODY
+	  if (NbodyNewStarToNbody)
+		  tg->ParticleType[i] = NbodyStar;
+	  else
+		  tg->ParticleType[i] = NormalStarType;
+#else
+	  tg->ParticleType[i] = NormalStarType;
+#endif
       }
     } 
 
@@ -1155,8 +1205,19 @@ int grid::StarParticleHandler(HierarchyEntry* SubgridPointer, int level,
       if (ComovingCoordinates)
 	StarMakerOverDensityThreshold /= mh / DensityUnits;  
 
-      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++)
-          tg->ParticleType[i] = NormalStarType;
+      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++) {
+	      //fprintf(stderr, "%d, star_maker7: particle position = (%.10lf, %.10lf, %.10lf)\n",
+	      // tg, tg->ParticlePosition[0][i], tg->ParticlePosition[1][i], tg->ParticlePosition[2][i]);
+	      // by YS, have to have an option for this from config file.
+#ifdef NBODY
+	      if (NbodyNewStarToNbody)
+		      tg->ParticleType[i] = NbodyStar;
+	      else
+	    	      tg->ParticleType[i] = NormalStarType;
+#else
+              tg->ParticleType[i] = NormalStarType;
+#endif
+      }
     } 
 
     if (STARMAKE_METHOD(SPRINGEL_HERNQUIST_STAR)) {
@@ -1198,9 +1259,16 @@ int grid::StarParticleHandler(HierarchyEntry* SubgridPointer, int level,
        &RefineRegionRightEdge[0], &RefineRegionRightEdge[1], &RefineRegionRightEdge[2],
        &StarMakerTypeIaSNe, BaryonField[MetalIaNum], tg->ParticleAttribute[3]);
 
-
-      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++)
-          tg->ParticleType[i] = NormalStarType;
+      for (i = NumberOfNewParticlesSoFar; i < NumberOfNewParticles; i++) {
+#ifdef NBODY
+				if (NbodyNewStarToNbody)
+					tg->ParticleType[i] = NbodyStar;
+				else
+					tg->ParticleType[i] = NormalStarType;
+#else
+				tg->ParticleType[i] = NormalStarType;
+#endif
+			}
 
       delete [] coolingrate;
 
@@ -1454,7 +1522,6 @@ int grid::StarParticleHandler(HierarchyEntry* SubgridPointer, int level,
 	BaryonField[TENum][n] += 0.5*B2/den;
       }
  
-
     /* Move any new particles into their new homes. */
  
     if (NumberOfNewParticles > 0) {
@@ -1950,7 +2017,6 @@ int grid::StarParticleHandler(HierarchyEntry* SubgridPointer, int level,
        ParticleMass, ParticleAttribute[1], ParticleAttribute[0],
           ParticleAttribute[2], ParticleType, &RadiationData.IntegratedStarFormation, 
        &MBHParticleType, &mbhradius);
- 
   } 
 
 

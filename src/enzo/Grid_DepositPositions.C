@@ -36,7 +36,7 @@ extern "C" void PFORTRAN_NAME(smooth_deposit)(FLOAT *posx, FLOAT *posy,
                         float *densfield, float *field, FLOAT *leftedge,
                         int *dim1, int *dim2, int *dim3, float *cellsize,
 			       float *rsmooth);
- 
+
  
 int grid::DepositPositions(FLOAT *Position[], float *Mass, int Number,
 			   int DepositField)
@@ -47,6 +47,7 @@ int grid::DepositPositions(FLOAT *Position[], float *Mass, int Number,
      Dimension, CellSize, DepositFieldPointer according to it. */
  
   float *DepositFieldPointer, CellSize, CloudSize;
+
   FLOAT LeftEdge[MAX_DIMENSION];
   int   dim, Dimension[MAX_DIMENSION];
  
@@ -118,7 +119,7 @@ int grid::DepositPositions(FLOAT *Position[], float *Mass, int Number,
  
 //  fprintf(stderr, "------DP Call Fortran cic_deposit with CellSize = %"GSYM"\n", CellSize);
     float CloudSize = CellSize;  // we assume deposit is only on self
- 
+
     PFORTRAN_NAME(cic_deposit)(Position[0], Position[1], Position[2], &GridRank,
 			      &Number, Mass, DepositFieldPointer, LeftEdge,
 			      Dimension, Dimension+1, Dimension+2,

@@ -246,7 +246,7 @@ int grid::ProjectToPlane(FLOAT ProjectedFieldLeftEdge[],
   /* 3) Dark matter density. */
  
   if (GravitatingMassFieldParticles != NULL) {
- 
+
     float *temp = new float[size];
     for (i = 0; i < size; i++)
       temp[i] = 0.0;

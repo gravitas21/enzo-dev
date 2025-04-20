@@ -416,6 +416,7 @@ printf("Plasma beta=%"GSYM"\n", CloudDensity*CloudSoundSpeed*CloudSoundSpeed/(In
       DataLabel[count++] = DIIName;
       DataLabel[count++] = HDIName;
     }
+
 #ifdef USE_NAUNET
     if (MultiSpecies == NAUNET_SPECIES) {
       DataLabel[count++] = (char*) GH2CNIName;
@@ -528,6 +529,7 @@ printf("Plasma beta=%"GSYM"\n", CloudDensity*CloudSoundSpeed*CloudSoundSpeed/(In
       
     }
 #endif
+
   }  // if Multispecies                                                                                                   
   //  DataLabel[count++] = MetalName;
   //if (PhotonTestUseColour)
@@ -593,8 +595,8 @@ printf("Plasma beta=%"GSYM"\n", CloudDensity*CloudSoundSpeed*CloudSoundSpeed/(In
 //     fprintf(header, "NumCPUs = %"ISYM"\n", NumberOfProcessors);
 //     fprintf(header, "FileStem = %s\n", NewMovieName);
 //     fclose(header);
-//   } /* END: write movie header file */
-//   /* Open Amira Data file, if requested */
+//   } /* END: write movie header file /
+//   /* Open Amira Data file, if requested /
 
 //   if (MovieSkipTimestep != INT_UNDEFINED) {
 //     char *AmiraFileName = new char[80];
@@ -668,7 +670,7 @@ printf("Plasma beta=%"GSYM"\n", CloudDensity*CloudSoundSpeed*CloudSoundSpeed/(In
 //     for (field = 0; field < nFields; field++)
 //       delete [] FieldNames[field];
 
-//   } /* ENDIF Movie */
+//   } /* ENDIF Movie /
 
   } // endif SetBaryonFields
 

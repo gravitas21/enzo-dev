@@ -26,8 +26,11 @@ extern "C" void FORTRAN_NAME(copy3d)(float *source, float *dest,
                                    int *sstart1, int *sstart2, int *sstart3,
                                    int *dstart1, int *dstart2, int *dststart3);
  
- 
+#ifdef NBODY
+int grid::FinishFFT(region *InitialRegion, int Field, int DomainDim[], bool NoStar)
+#else
 int grid::FinishFFT(region *InitialRegion, int Field, int DomainDim[])
+#endif
 {
  
   int dim, size;
@@ -59,20 +62,33 @@ int grid::FinishFFT(region *InitialRegion, int Field, int DomainDim[])
   /* If the data is on this processor then copy it to a new region. */
  
   if (MyProcessorNumber == InitialRegion->Processor) {
- 
-    /* Set FieldPointer to the appropriate field. */
- 
-    float *FieldPointer;
-    if (Field == POTENTIAL_FIELD) {
-      if (PotentialField == NULL)
-	PotentialField = new float[size]();
-      FieldPointer = PotentialField;
-    } else {
-      ENZO_VFAIL("Field %"ISYM" not recognized.\n", Field)
-    }
- 
+
+		/* Set FieldPointer to the appropriate field. */
+
+		if (debug1) fprintf(stdout,"4-10-6-1\n"); // by YS
+		float *FieldPointer;
+
+		if (Field == POTENTIAL_FIELD) {
+#ifdef NBODY
+			if (NoStar) {
+				if (PotentialFieldNoStar == NULL)  
+					PotentialFieldNoStar = new float[size]();
+				FieldPointer = PotentialFieldNoStar;
+			} else {
+				if (PotentialField == NULL)  
+					PotentialField = new float[size]();
+				FieldPointer = PotentialField;
+			}
+#else
+			if (PotentialField == NULL)
+				PotentialField = new float[size]();
+			FieldPointer = PotentialField;
+#endif
+		} else {
+			ENZO_VFAIL("Field %"ISYM" not recognized.\n", Field)
+		}
+
     /* Copy region data into grid. */
- 
     FORTRAN_NAME(copy3d)(InitialRegion->Data, FieldPointer,
 			 InitialRegion->RegionDim,
 			 InitialRegion->RegionDim+1,
@@ -81,6 +97,7 @@ int grid::FinishFFT(region *InitialRegion, int Field, int DomainDim[])
 			 GravStart, GravStart+1, GravStart+2,
 			 Zero, Zero+1, Zero+2);
  
+		if (debug1) fprintf(stdout,"4-10-6-2\n"); // by YS
     /* Delete old field. */
  
     delete [] InitialRegion->Data;

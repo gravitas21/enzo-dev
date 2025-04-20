@@ -69,7 +69,7 @@ public:
   Star* copy(void);
 
   FLOAT Time; 
-  
+
   // Routines
   star_type ReturnType(void) { return type; };
   int   ReturnID(void) { return Identifier; };

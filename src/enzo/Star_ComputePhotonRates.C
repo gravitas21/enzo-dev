@@ -45,7 +45,6 @@ int Star::ComputePhotonRates(const float TimeUnits, int &nbins, float E[], doubl
     _mass = this->FinalMass;
   else
     _mass = this->Mass;
-  
   _age = this->ReturnAge()/this->LifeTime; //Percentage of lifetime
   
   x = log10((float)(_mass));

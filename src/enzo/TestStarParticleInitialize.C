@@ -128,12 +128,13 @@ int TestStarParticleInitialize(FILE *fptr, FILE *Outfptr, HierarchyEntry &TopGri
 					      TestStarParticleBField) == FAIL)
     ENZO_FAIL("Error in InitializeUniformGrid.");
 
+
   if (TopGrid.GridData->
       TestStarParticleInitializeGrid(TestStarParticleStarMass,
 				     Initialdt, 
 				     TestStarParticleStarVelocity,
 				     TestStarParticleStarPosition) == FAIL)
-  ENZO_FAIL("Error in TestStarParticleInitializeGrid.\n");
+    ENZO_FAIL("Error in TestStarParticleInitializeGrid.\n");
 
   /* set up field names and units */
   
