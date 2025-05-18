@@ -413,7 +413,7 @@ class grid
 
 		/* Set the timestep in this grid to the timestep in the argument
 			 (for step #3) */
-
+		
 		void SetTimeStep(float dt) {dtFixed = dt;};
 
 		/* Check timestep (dtFixed) against argument (return fail if dtFixed > dt).
@@ -2760,6 +2760,7 @@ class grid
 								double DiskDensityCap,
 								double DMConcentration,
 								double DiskTemperature,
+								int DiskPressureBalance,
 								double InitialTemperature,
 								double UniformDensity,
 								int   EquilibrateChem,
@@ -3680,6 +3681,7 @@ class grid
 								int ComputeViscosity(float *viscosity, int DensNum);
 
 								int AddAmbipolarDiffusion();
+								int ComputeADTimeStep(float &dt);
 
 								int AddResistivity();
 								int ComputeResistivity(float *resistivity, int DensNum);

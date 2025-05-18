@@ -48,7 +48,7 @@ public:
   static const unsigned_long_int a2 = 35;
   static const unsigned_long_int a3 = 4;
   static const unsigned_long_int amod = 4768777513237032717;
-  static const float invrandmax = 1.0/1.84467440737095e19;
+  static constexpr float invrandmax = 1.0/1.84467440737095e19;
 
 
  //public:

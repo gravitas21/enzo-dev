@@ -20,18 +20,18 @@ cd src/enzo/
 #module add gcc/10.3.0
 #module add openmpi
 
-module add modules/2.0-20220630 
-module add gcc/7.5.0
+#module add modules/2.0-20220630 
+#module add gcc/7.5.0
 #module add openmpi/1.10.7
-module add openmpi/cuda-4.0.7
-module add cuda/11.4.4
-module add hdf5/1.8.22
+#module add openmpi/cuda-4.0.7
+#module add cuda/11.4.4
+#module add hdf5/1.8.22
 #module add ucx
 #module add cuda/12.1.1
 #module add openmpi/1.10.7
 #module add intel-parallel-studio
 
-make machine-rusty
+make machine-origins2
 make precision-64 integers-32 particle-id-32 max-baryons-30 lcaperf-no max-tasks-per-node-36 grackle-yes new-problem-types-yes photon-no nbody-yes opt-aggressive cuda-no
 make show-config
 make show-flags
