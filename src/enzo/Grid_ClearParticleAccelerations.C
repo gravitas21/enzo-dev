@@ -44,17 +44,13 @@ int grid::ClearParticleAccelerations()
  
       ParticleAcceleration[dim] = new float[NumberOfParticles];
  
-      /* Clear it. */
- 
-      for (i = 0; i < NumberOfParticles; i++)
-	ParticleAcceleration[dim][i] = 0.0;
- 
 #ifdef NBODY 
       if (ParticleAccelerationNoStar[dim] != NULL)
 	      fprintf(stderr, "ClearStarBackGroundAcceleration: Field not NULL.\n");
        
       /* Allocate accleration field. */
-      ParticleAccelerationNoStar[dim] = new float[NumberOfParticles]; //by YS, we have to change this to
+      ParticleAccelerationNoStar[dim] = new float[NumberOfParticles]; 
+      //by YS, we have to change this to number of nbody stars
 #endif
      /* Clear it. */
       //for (i = 0; i < NumberOfStars; i++) {
@@ -64,7 +60,8 @@ int grid::ClearParticleAccelerations()
       for (i = 0; i < NumberOfParticles; i++) {
 	      ParticleAcceleration[dim][i] = 0.0;
 #ifdef NBODY
-	      ParticleAccelerationNoStar[dim][i] = 0.0; //by YS, we have to change this to
+	      ParticleAccelerationNoStar[dim][i] = 0.0; 
+	      //by YS, we have to change this to number of nbody stars
 #endif
       }
     }

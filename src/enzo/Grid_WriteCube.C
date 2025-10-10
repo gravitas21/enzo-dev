@@ -647,8 +647,6 @@ int grid::WriteCube(char *base_name, int grid_id, int TGdims[])
 #ifdef NBODY
       this->ClearGravitatingMassFieldParticlesNoStar();
       this->DepositParticlePositions(this, Time, GRAVITATING_MASS_FIELD_PARTICLES,FALSE);
-#else
-      this->DepositParticlePositions(this, Time, GRAVITATING_MASS_FIELD_PARTICLES);
 #endif
     }
  

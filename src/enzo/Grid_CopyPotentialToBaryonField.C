@@ -53,7 +53,7 @@ int grid::CopyPotentialToBaryonField()
 
 #ifdef NBODY
 	if (PotentialFieldNoStar == NULL) {
-		ENZO_FAIL("PotentialField missing.\n");
+		ENZO_FAIL("PotentialFieldNoStar missing.\n");
 	}
 #endif
 	if (PotentialField == NULL) {
